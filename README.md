@@ -13,7 +13,7 @@ Practicing SQL by Solving tefchTFQ's 20 SQL queries on Olympic Games data.
 - Microsoft SQL Server
 
 #### 🔗 Links
-- SQL Code = [Click Here For SQL File]() 
+- SQL Code = [Click Here For SQL File](https://github.com/EnyaCrocock/Olympic_Games/blob/main/Olympics_SQL_Queries.sql) 
 
 ---
 
