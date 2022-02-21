@@ -70,7 +70,7 @@ WITH
      olympic_games_held AS (
                             SELECT COUNT( DISTINCT Games) AS total_games_held
                             FROM   olympic_history
-							),
+     		           ),
 
      games_participated AS (
                             SELECT DISTINCT 
@@ -80,7 +80,7 @@ WITH
                             GROUP  BY NOC
                             )	
 SELECT n.region,
-	   g.total_games_participated
+       g.total_games_participated
 FROM   games_participated AS g
 JOIN   noc_regions AS n 
 ON     g.NOC = n.NOC
@@ -112,13 +112,14 @@ WITH
                         SELECT COUNT(DISTINCT Games) AS total_summer_olympics
                         FROM   olympic_history
                         WHERE  Season = 'Summer'
-						),
+			),
+			
     sports_played   AS (
-	                    SELECT Sport,
+	                SELECT Sport,
                                COUNT(DISTINCT Games) AS total_olympics_played_at
                         FROM   olympic_history
-				        GROUP  BY Sport
-					    )
+			GROUP  BY Sport
+			)
 SELECT p.Sport,
        p.total_olympics_played_at
 FROM   sports_played AS p 
@@ -138,17 +139,17 @@ HAVING COUNT(DISTINCT Games) = 1
 
 WITH 
     sports_played AS (
-	                  SELECT Sport,
-                             COUNT(DISTINCT Games) AS total_olympics_played_at
+	              SELECT Sport,
+                      COUNT(DISTINCT Games) AS total_olympics_played_at
                       FROM   olympic_history 
                       GROUP  BY Sport
-					  HAVING COUNT(DISTINCT Games) = 1 
-					  )
+		      HAVING COUNT(DISTINCT Games) = 1 
+		      )
 SELECT DISTINCT
        s.Sport,
        s. total_olympics_played_at,
-	   o. Games,
-	   o. City
+       o. Games,
+       o. City
 FROM   sports_played AS s
 JOIN   olympic_history AS o
 ON     s.Sport = o.Sport
@@ -168,18 +169,18 @@ ORDER  BY total_sports_played DESC
 WITH 
      gold_medals AS ( 
                      SELECT MAX(Age) AS Age
-					 FROM   olympic_history
-					 WHERE  Medal = 'Gold'
-					 )
+	             FROM   olympic_history
+	             WHERE  Medal = 'Gold'
+		     )
 SELECT o.Name,
        o.Sex,
        o.Age,
-	   o.Team,
-	   o.Games,
-	   o.City,
-	   o.Sport,
-	   o.Event,
-	   o.Medal
+       o.Team,
+       o.Games,
+       o.City,
+       o.Sport,
+       o.Event,
+       o.Medal
 FROM   olympic_history AS o
 JOIN   gold_medals AS g
 ON     o.Age = g.Age
@@ -190,19 +191,19 @@ WHERE  o.Medal = 'Gold'
 SELECT Name,
        Sex,
        Age,
-	   Team,
-	   Games,
-	   City,
-	   Sport,
-	   Event,
-	   Medal
+       Team,
+       Games,
+       City,
+       Sport,
+       Event,
+       Medal
 FROM   olympic_history
 WHERE  Medal = 'Gold'
 AND    Age = (
               SELECT MAX(Age) 
-			  FROM   olympic_history
-			  WHERE  Medal = 'Gold'
-			  )
+              FROM   olympic_history
+              WHERE  Medal = 'Gold'
+	      )
 
 
 -- 10. Find the Ratio of female to male athletes that participated in all olympic games.
@@ -210,9 +211,9 @@ AND    Age = (
 WITH 
      participants_by_sex AS (
                              SELECT CAST(SUM(CASE WHEN Sex = 'F' THEN 1 ELSE 0 END)AS FLOAT) AS female_participants,
-				                    CAST(SUM(CASE WHEN Sex = 'M' THEN 1 ELSE 0 END)AS FLOAT) AS male_participants
-							 FROM   olympic_history
-							 )
+	                            CAST(SUM(CASE WHEN Sex = 'M' THEN 1 ELSE 0 END)AS FLOAT) AS male_participants
+	                     FROM   olympic_history
+			     )
 SELECT CONCAT(female_participants/female_participants, ' : ', ROUND(male_participants/female_participants, 2)) AS ratio
 FROM   participants_by_sex
 
@@ -222,7 +223,7 @@ FROM   participants_by_sex
 SELECT TOP 5 
        Name,
        Team,
-	   SUM(CASE WHEN Medal = 'Gold' THEN 1 ELSE 0 END) AS total_gold_medals
+       SUM(CASE WHEN Medal = 'Gold' THEN 1 ELSE 0 END) AS total_gold_medals
 FROM   olympic_history
 GROUP  BY Name, Team
 ORDER  BY total_gold_medals DESC
@@ -233,7 +234,7 @@ ORDER  BY total_gold_medals DESC
 SELECT TOP 5 
        Name,
        Team,
-	   SUM(CASE WHEN Medal IN ('Gold', 'Silver', 'Bronze') THEN 1 ELSE 0 END) AS total_medals
+       SUM(CASE WHEN Medal IN ('Gold', 'Silver', 'Bronze') THEN 1 ELSE 0 END) AS total_medals
 FROM   olympic_history
 GROUP  BY Name, Team
 ORDER  BY total_medals DESC
@@ -243,7 +244,7 @@ ORDER  BY total_medals DESC
 
 SELECT TOP 5
        n.region,
-	   SUM(CASE WHEN o.Medal IN ('Gold', 'Silver', 'Bronze') THEN 1 ELSE 0 END) AS total_medals
+       SUM(CASE WHEN o.Medal IN ('Gold', 'Silver', 'Bronze') THEN 1 ELSE 0 END) AS total_medals
 FROM   olympic_history AS o
 JOIN   noc_regions AS n
 ON     o.NOC = n.NOC
@@ -254,9 +255,9 @@ ORDER  BY total_medals DESC
 -- 14. List down total gold, silver and bronze medals won by each country.
 
 SELECT n.region, 
-	   SUM(CASE WHEN o.Medal = 'Gold' THEN 1 ELSE 0 END) AS gold,
-	   SUM(CASE WHEN o.Medal = 'Silver' THEN 1 ELSE 0 END) AS silver,
-	   SUM(CASE WHEN o.Medal = 'Bronze' THEN 1 ELSE 0 END) AS bronze
+       SUM(CASE WHEN o.Medal = 'Gold' THEN 1 ELSE 0 END) AS gold,
+       SUM(CASE WHEN o.Medal = 'Silver' THEN 1 ELSE 0 END) AS silver,
+       SUM(CASE WHEN o.Medal = 'Bronze' THEN 1 ELSE 0 END) AS bronze
 FROM   olympic_history AS o
 JOIN   noc_regions AS n
 ON     o.NOC = n.NOC
@@ -268,9 +269,9 @@ ORDER  BY gold DESC
 
 SELECT o.Games,
        n.region, 
-	   SUM(CASE WHEN o.Medal = 'Gold' THEN 1 ELSE 0 END) AS gold,
-	   SUM(CASE WHEN o.Medal = 'Silver' THEN 1 ELSE 0 END) AS silver,
-	   SUM(CASE WHEN o.Medal = 'Bronze' THEN 1 ELSE 0 END) AS bronze
+       SUM(CASE WHEN o.Medal = 'Gold' THEN 1 ELSE 0 END) AS gold,
+       SUM(CASE WHEN o.Medal = 'Silver' THEN 1 ELSE 0 END) AS silver,
+       SUM(CASE WHEN o.Medal = 'Bronze' THEN 1 ELSE 0 END) AS bronze
 FROM   olympic_history AS o
 JOIN   noc_regions AS n
 ON     o.NOC = n.NOC
@@ -284,19 +285,19 @@ WITH
      medals AS (
                 SELECT o.Games,
                        n.region, 
-	                   SUM(CASE WHEN o.Medal = 'Gold' THEN 1 ELSE 0 END) AS gold,
-	                   SUM(CASE WHEN o.Medal = 'Silver' THEN 1 ELSE 0 END) AS silver,
-	                   SUM(CASE WHEN o.Medal = 'Bronze' THEN 1 ELSE 0 END) AS bronze
+	               SUM(CASE WHEN o.Medal = 'Gold' THEN 1 ELSE 0 END) AS gold,
+	               SUM(CASE WHEN o.Medal = 'Silver' THEN 1 ELSE 0 END) AS silver,
+	               SUM(CASE WHEN o.Medal = 'Bronze' THEN 1 ELSE 0 END) AS bronze
                 FROM   olympic_history AS o
                 JOIN   noc_regions AS n
                 ON     o.NOC = n.NOC
                 GROUP  BY o.Games, n.region
                )
 SELECT DISTINCT 
-	   Games,
+       Games,
        CONCAT (first_value(region) OVER(PARTITION BY games ORDER BY gold DESC), ' - ' , first_value(gold) OVER(PARTITION BY games ORDER BY gold DESC)) AS max_gold,
-	   CONCAT (first_value(region) OVER(PARTITION BY games ORDER BY silver DESC), ' - ', first_value(silver) OVER(PARTITION BY games ORDER BY silver DESC)) AS max_silver,
-	   CONCAT (first_value(region) OVER(PARTITION BY games ORDER BY bronze DESC), ' - ', first_value(bronze) OVER(PARTITION BY games ORDER BY bronze DESC)) AS max_bronze
+       CONCAT (first_value(region) OVER(PARTITION BY games ORDER BY silver DESC), ' - ', first_value(silver) OVER(PARTITION BY games ORDER BY silver DESC)) AS max_silver,
+       CONCAT (first_value(region) OVER(PARTITION BY games ORDER BY bronze DESC), ' - ', first_value(bronze) OVER(PARTITION BY games ORDER BY bronze DESC)) AS max_bronze
 FROM   medals
 GROUP  BY Games, region, gold, silver, bronze
 
@@ -307,10 +308,10 @@ WITH
      medals AS (
                 SELECT o.Games,
                        n.region, 
-	                   SUM(CASE WHEN o.Medal = 'Gold' THEN 1 ELSE 0 END) AS gold,
-	                   SUM(CASE WHEN o.Medal = 'Silver' THEN 1 ELSE 0 END) AS silver,
-	                   SUM(CASE WHEN o.Medal = 'Bronze' THEN 1 ELSE 0 END) AS bronze,
-					   SUM(CASE WHEN o.Medal IN ('Gold', 'Silver', 'Bronze') THEN 1 ELSE 0 END) AS total_medals
+	               SUM(CASE WHEN o.Medal = 'Gold' THEN 1 ELSE 0 END) AS gold,
+	               SUM(CASE WHEN o.Medal = 'Silver' THEN 1 ELSE 0 END) AS silver,
+	               SUM(CASE WHEN o.Medal = 'Bronze' THEN 1 ELSE 0 END) AS bronze,
+		       SUM(CASE WHEN o.Medal IN ('Gold', 'Silver', 'Bronze') THEN 1 ELSE 0 END) AS total_medals
                 FROM   olympic_history AS o
                 JOIN   noc_regions AS n
                 ON     o.NOC = n.NOC
@@ -319,9 +320,9 @@ WITH
 SELECT DISTINCT 
        Games,
        CONCAT (first_value(region) OVER(PARTITION BY games ORDER BY gold DESC), ' - ' , first_value(gold) OVER(PARTITION BY games ORDER BY gold DESC)) AS max_gold,
-	   CONCAT (first_value(region) OVER(PARTITION BY games ORDER BY silver DESC), ' - ' , first_value(silver) OVER(PARTITION BY games ORDER BY silver DESC)) AS max_silver,
-	   CONCAT (first_value(region) OVER(PARTITION BY games ORDER BY bronze DESC), ' - ' , first_value(bronze) OVER(PARTITION BY games ORDER BY bronze DESC)) AS max_bronze,
-	   CONCAT (first_value(region) OVER(PARTITION BY games ORDER BY total_medals DESC), ' - ' , first_value(total_medals) OVER(PARTITION BY games ORDER BY total_medals DESC)) AS max_medals
+       CONCAT (first_value(region) OVER(PARTITION BY games ORDER BY silver DESC), ' - ' , first_value(silver) OVER(PARTITION BY games ORDER BY silver DESC)) AS max_silver,
+       CONCAT (first_value(region) OVER(PARTITION BY games ORDER BY bronze DESC), ' - ' , first_value(bronze) OVER(PARTITION BY games ORDER BY bronze DESC)) AS max_bronze,
+       CONCAT (first_value(region) OVER(PARTITION BY games ORDER BY total_medals DESC), ' - ' , first_value(total_medals) OVER(PARTITION BY games ORDER BY total_medals DESC)) AS max_medals
 FROM   medals
 GROUP  BY Games, region, gold, silver, bronze, total_medals 
 
@@ -331,9 +332,9 @@ GROUP  BY Games, region, gold, silver, bronze, total_medals
 WITH 
      medals AS (
                 SELECT n.region, 
-	                   SUM(CASE WHEN o.Medal = 'Gold' THEN 1 ELSE 0 END) AS gold,
-	                   SUM(CASE WHEN o.Medal = 'Silver' THEN 1 ELSE 0 END) AS silver,
-	                   SUM(CASE WHEN o.Medal = 'Bronze' THEN 1 ELSE 0 END) AS bronze
+	               SUM(CASE WHEN o.Medal = 'Gold' THEN 1 ELSE 0 END) AS gold,
+	               SUM(CASE WHEN o.Medal = 'Silver' THEN 1 ELSE 0 END) AS silver,
+	               SUM(CASE WHEN o.Medal = 'Bronze' THEN 1 ELSE 0 END) AS bronze
                 FROM   olympic_history AS o
                 JOIN   noc_regions AS n
                 ON     o.NOC = n.NOC
@@ -341,9 +342,9 @@ WITH
                )
 SELECT DISTINCT
        region,
-	   gold,
-	   silver,
-	   bronze
+       gold,
+       silver,
+       bronze
 FROM   medals
 WHERE  gold = 0
 AND   (silver <> 0 OR bronze <> 0)
@@ -366,8 +367,8 @@ ORDER  BY total_medals DESC
 
 SELECT Games,
        Team AS Country,
-	   Sport,
-	   SUM(CASE WHEN Medal IN ('Gold', 'Silver', 'Bronze') THEN 1 ELSE 0 END) AS total_medals
+       Sport,
+       SUM(CASE WHEN Medal IN ('Gold', 'Silver', 'Bronze') THEN 1 ELSE 0 END) AS total_medals
 FROM   olympic_history
 WHERE  NOC = 'IND'
 AND    Sport = 'Hockey'
