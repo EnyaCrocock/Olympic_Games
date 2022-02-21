@@ -140,7 +140,7 @@ HAVING COUNT(DISTINCT Games) = 1
 WITH 
     sports_played AS (
 	              SELECT Sport,
-                      COUNT(DISTINCT Games) AS total_olympics_played_at
+                             COUNT(DISTINCT Games) AS total_olympics_played_at
                       FROM   olympic_history 
                       GROUP  BY Sport
 		      HAVING COUNT(DISTINCT Games) = 1 
