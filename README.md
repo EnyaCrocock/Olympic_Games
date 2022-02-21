@@ -1,5 +1,5 @@
 # Olympic Games SQL Queries
-Practicing SQL by Solving tefchTFQ's 20 SQL queries on an Olympic Games Kaggle dataset. 
+Practicing SQL by Solving techTFQ's 20 SQL queries on an Olympic Games Kaggle dataset. 
 
 ---
 
