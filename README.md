@@ -1,5 +1,5 @@
-# Olympic_Games
-Practicing SQL by Solving tefchTFQ's 20 SQL queries on Olympic Games data. 
+# Olympic Games SQL Queries
+Practicing SQL by Solving tefchTFQ's 20 SQL queries on an Olympic Games Kaggle dataset. 
 
 ---
 
